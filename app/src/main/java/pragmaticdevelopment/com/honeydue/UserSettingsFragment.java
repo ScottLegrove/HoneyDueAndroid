@@ -1,42 +1,36 @@
 package pragmaticdevelopment.com.honeydue;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ListFragment.OnFragmentInteractionListener} interface
+ * {@link UserSettingsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ListFragment#newInstance} factory method to
+ * Use the {@link UserSettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListFragment extends Fragment {
+public class UserSettingsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public static ListFragment newInstance() {
-        ListFragment fragment = new ListFragment();
-
-        // Put bundle or other args here
-
+    public static UserSettingsFragment newInstance() {
+        UserSettingsFragment fragment = new UserSettingsFragment();
+        /*Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);*/
         return fragment;
     }
 
-    public ListFragment() {
+    public UserSettingsFragment() {
         // Required empty public constructor
     }
 
@@ -49,10 +43,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
-        ListView lvLists = (ListView) view.findViewById(R.id.lvLists);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_user_settings, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -93,4 +84,5 @@ public class ListFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
+
 }

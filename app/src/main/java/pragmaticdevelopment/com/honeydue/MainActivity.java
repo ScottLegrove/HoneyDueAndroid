@@ -20,7 +20,8 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
             ListFragment.OnFragmentInteractionListener,
-            AddListFragment.OnFragmentInteractionListener {
+            AddListFragment.OnFragmentInteractionListener,
+            UserSettingsFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Lists");
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ListFragment lf = new ListFragment();
+        ListFragment lf = ListFragment.newInstance();
         ft.add(R.id.fragFrame, lf, "lists" );
         ft.commit();
     }
@@ -91,12 +92,12 @@ public class MainActivity extends AppCompatActivity
         // Check to ensure fragment isn't currently loaded
         if (id == R.id.nav_lists && !(f instanceof ListFragment)) {
             getSupportActionBar().setTitle("Lists");
-            ListFragment lf = new ListFragment();
+            ListFragment lf = ListFragment.newInstance();
             ft.replace(R.id.fragFrame, lf, "lists");
-        } else if (id == R.id.nav_add_list && !(f instanceof AddListFragment)) {
-            getSupportActionBar().setTitle("Add List");
-            AddListFragment alf = new AddListFragment();
-            ft.replace(R.id.fragFrame, alf, "addList");
+        } else if (id == R.id.nav_settings && !(f instanceof UserSettingsFragment)) {
+            getSupportActionBar().setTitle("User Settings");
+            UserSettingsFragment usf = UserSettingsFragment.newInstance();
+            ft.replace(R.id.fragFrame, usf, "userSettings");
         }
 
         ft.commit();
