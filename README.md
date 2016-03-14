@@ -10,7 +10,7 @@ This README would normally document whatever steps are necessary to get your app
 
 ### How do I get set up? ###
 This is a test to see if everything is working ok
-* Testing a second time
+* Testing a second time and again
 * Summary of set up
 * Configuration
 * Dependencies
