@@ -9,7 +9,7 @@ This README would normally document whatever steps are necessary to get your app
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
-
+This is a test to see if everything is working ok
 * Summary of set up
 * Configuration
 * Dependencies
