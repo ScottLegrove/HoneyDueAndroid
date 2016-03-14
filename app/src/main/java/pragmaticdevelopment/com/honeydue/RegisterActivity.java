@@ -17,6 +17,8 @@ public class RegisterActivity extends AppCompatActivity {
         toolbar.setTitle("Register");
         setSupportActionBar(toolbar);
 
+        //asdf
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
