@@ -19,6 +19,8 @@ import android.view.ViewGroup;
  */
 public class AddListFragment extends Fragment {
 
+    // TEST TEXT
+
     private OnFragmentInteractionListener mListener;
 
     public static AddListFragment newInstance() {
