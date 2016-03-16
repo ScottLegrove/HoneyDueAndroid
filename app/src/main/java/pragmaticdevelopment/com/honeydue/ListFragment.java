@@ -1,6 +1,7 @@
 package pragmaticdevelopment.com.honeydue;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
@@ -50,7 +52,18 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        ListView lvLists = (ListView) view.findViewById(R.id.lvLists);
+
+        // Populating ListView
+        ListView lists = (ListView) view.findViewById(R.id.lvLists);
+        lists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int[] IDs = {1,2,3,4,5};
+                Intent i = new Intent(getContext(), TaskListActivity.class);
+                i.putExtra("LIST_ID_EXTRA", IDs[position]);
+                startActivity(i);
+            }
+        });
 
         return view;
     }

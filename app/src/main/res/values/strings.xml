@@ -33,4 +33,5 @@
         <item>Genie Ji</item>
     </string-array>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_task_list">TaskListActivity</string>
 </resources>
