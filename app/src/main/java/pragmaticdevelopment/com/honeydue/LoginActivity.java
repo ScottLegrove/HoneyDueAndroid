@@ -33,7 +33,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import pragmaticdevelopment.com.honeydue.DBSource.UserModel;
+
 import static android.Manifest.permission.READ_CONTACTS;
+import static pragmaticdevelopment.com.honeydue.HelperClasses.UserHelper.getUser;
 
 /**
  * A login screen that offers login via email/password.
@@ -175,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -186,22 +189,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } /* else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-        }
+        } */
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
+            UserModel currentUser;
+
+            //TODO: Check if this returns a valid user object, if it does, go to next activity
+            //else focus on username and toast an invalid login;
+            currentUser = (UserModel) getUser(email, password);
+
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            /* showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute((Void) null); */
         }
     }
 

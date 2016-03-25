@@ -72,9 +72,12 @@ public class RegisterActivity extends AppCompatActivity {
         } else if (!uEmail.contains("@")) {
             email.setError("Invalid Email");
             focusView = email;
-        }else if (!TextUtils.isEmpty(pwPrim) || !TextUtils.isEmpty(pwSec)){
+        }else if (TextUtils.isEmpty(pwPrim)){
             pwPrimary.setError("Please enter a password");
             pwPrimary.requestFocus();
+        }else if (TextUtils.isEmpty(pwSec)) {
+            pwSecondary.setError("Please confirm your password");
+            pwSecondary.requestFocus();
         }else if (!TextUtils.equals(pwPrim, pwSec)){
             pwPrimary.setError("Passwords do not match");
             pwPrimary.requestFocus();
