@@ -25,7 +25,7 @@ public class APIConsumer {
     private static String doGetRequest(URL url, String token) throws IOException
     {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
+        //connection.setDoOutput(true);
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "text/plain");
@@ -61,7 +61,7 @@ public class APIConsumer {
     private static String doDeleteRequest(URL url, String token) throws IOException
     {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
+        //connection.setDoOutput(true);
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Content-Type", "text/plain");

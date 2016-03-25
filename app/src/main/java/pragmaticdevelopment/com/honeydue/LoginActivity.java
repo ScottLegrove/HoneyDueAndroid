@@ -29,14 +29,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
+import pragmaticdevelopment.com.honeydue.DBSource.APIConsumer;
 import pragmaticdevelopment.com.honeydue.DBSource.UserModel;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static pragmaticdevelopment.com.honeydue.HelperClasses.UserHelper.getUser;
+import static pragmaticdevelopment.com.honeydue.HelperClasses.UserHelper.*;
 
 /**
  * A login screen that offers login via email/password.
@@ -161,11 +165,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
-        // DELETE BEFORE COMPLETION AND INSERT LOGIN CHECKS
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -200,17 +199,72 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // form field with an error.
             focusView.requestFocus();
         } else {
-            UserModel currentUser;
+            ValidateCredentialsTask vcTask = new ValidateCredentialsTask();
+            vcTask.execute(email, password);
 
-            //TODO: Check if this returns a valid user object, if it does, go to next activity
-            //else focus on username and toast an invalid login;
-            currentUser = (UserModel) getUser(email, password);
+            Boolean valid;
+
+            try{
+                valid = vcTask.get();
+            }
+            catch(Exception ex) {
+                //Handle unable to validate.
+                valid = false;
+            }
+
+            if (valid){
+                showProgress(true);
+
+                LoginUserTask luTask = new LoginUserTask();
+                luTask.execute(email, password);
+
+                UserModel currentUser;
+
+                try{
+                    currentUser = luTask.get();
+                }catch(Exception e){
+                    Toast.makeText(this, "Invalid Login", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Send user to main activity
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }else{
+                Toast.makeText(this, "Invalid Login", Toast.LENGTH_SHORT).show();
+            }
 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             /* showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null); */
+        }
+    }
+
+    // Async Credential validation
+    private class ValidateCredentialsTask extends AsyncTask<Object, Void, Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(Object... params) {
+            String username = (String)params[0];
+            String password = (String)params[1];
+
+            return validateCredentials(username, password);
+        }
+    }
+
+    // Async Login
+    private class LoginUserTask extends AsyncTask<Object, Void, UserModel>{
+
+        @Override
+        protected UserModel doInBackground(Object... params) {
+            String username = (String)params[0];
+            String password = (String)params[1];
+
+            UserModel currentUser = getUser(username, password);
+            return currentUser;
         }
     }
 

@@ -41,6 +41,8 @@ public class UserHelper {
     public static boolean validateCredentials(String username, String password){
         try{
             String json = APIConsumer.getLoginJson(username, password);
+            if (json == null) return false;
+
             JSONObject validation = new JSONObject(json);
 
             if(validation.getString("token") != null){
