@@ -25,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText pwPrimary;
     private EditText pwSecondary;
 
-    RegisterUserTask ruTask;
+    RegisterUserTask ruTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +118,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Boolean success){
+            ruTask = null;
+
             if(success){
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 i.setFlags(i.FLAG_ACTIVITY_NEW_TASK | i.FLAG_ACTIVITY_CLEAR_TASK);
