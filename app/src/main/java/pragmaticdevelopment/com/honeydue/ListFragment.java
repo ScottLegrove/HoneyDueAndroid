@@ -79,7 +79,7 @@ public class ListFragment extends Fragment {
 
         if(spToken != null) {
             // Acquire lists
-            ListTask lTask = new ListTask(spToken);
+            lTask = new ListTask(spToken);
             lTask.execute((Void) null);
 
             try { lTask.get(); // this will cause application to wait until it returns
@@ -100,6 +100,8 @@ public class ListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getContext(), TaskListActivity.class);
                 i.putExtra("LIST_ID_EXTRA", listIDs[position]);
+                ListsModel selected = (ListsModel)lvLists.getItemAtPosition(position);
+                i.putExtra("LIST_TITLE_EXTRA", selected.getTitle());
                 startActivity(i);
             }
         });
