@@ -1,5 +1,7 @@
 package pragmaticdevelopment.com.honeydue;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +12,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -21,6 +24,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText email;
     private EditText pwPrimary;
     private EditText pwSecondary;
+
+    RegisterUserTask ruTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void attemptRegister() {
+        if(ruTask != null){
+            return;
+        }
+
         // cancel flag
         boolean cancel = false;
         View focusView = null;
@@ -82,8 +91,45 @@ public class RegisterActivity extends AppCompatActivity {
             pwPrimary.setError("Passwords do not match");
             pwPrimary.requestFocus();
         }else{
-            // Wrap in IF this is true, go to main activity, ELSE focusView = username;
-            registerUser(un, pwPrim, uEmail);
+            ruTask = new RegisterUserTask(un, uEmail, pwPrim);
+            ruTask.execute((Void) null);
+        }
+    }
+
+    private class RegisterUserTask extends AsyncTask<Void, Void, Boolean>{
+        private final String mUsername;
+        private final String mEmail;
+        private final String mPassword;
+
+        RegisterUserTask(String username, String email, String password){
+            mUsername = username;
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try{
+                return registerUser(mUsername, mPassword, mEmail);
+            }catch(Exception e){
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success){
+            if(success){
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                i.setFlags(i.FLAG_ACTIVITY_NEW_TASK | i.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+            }else{
+                Toast.makeText(getApplicationContext(), "Invalid credentials, please try again", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            ruTask = null;
         }
     }
 }

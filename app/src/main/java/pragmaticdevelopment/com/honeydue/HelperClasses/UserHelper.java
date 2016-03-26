@@ -32,8 +32,16 @@ public class UserHelper {
 
     //TODO SCOTT: handle an reg exp email validator
     // Creates a record to register a new user.
-    public static void registerUser(String username, String password, String email){
-        APIConsumer.doRegisterJson(username, password, email);
+    public static boolean registerUser(String username, String password, String email){
+        try {
+            String json = APIConsumer.doRegisterJson(username, password, email);
+            if (json == null) return false;
+
+            JSONObject retObj = new JSONObject(json);
+            return retObj.getBoolean("success");
+        }catch(JSONException e){
+            return false;
+        }
     }
 
     // Returns a boolean to validate whether the user credentials are correct. ***Also UserModel itself can be used for login***
