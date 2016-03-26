@@ -221,10 +221,11 @@ public class LoginActivity extends AppCompatActivity { // implements LoaderCallb
                     UserModel currentUser = getUser(mUsername, mPassword);
 
                     // Put user info in shared pref
-                    SharedPreferences sp = getSharedPreferences("userPref", Context.MODE_PRIVATE);
-                    sp.edit().putString("username", currentUser.getUserName());
-                    sp.edit().putString("token", currentUser.getUToken());
-                    sp.edit().commit();
+                    SharedPreferences sp = getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("username", currentUser.getUserName());
+                    editor.putString("token", currentUser.getUToken());
+                    editor.commit();
 
                     return true;
                 }
