@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import pragmaticdevelopment.com.honeydue.HelperClasses.ListHelper;
@@ -41,7 +42,13 @@ public class AlertDialogNewListFragment extends DialogFragment {
                         SharedPreferences sp = getContext().getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
                         String spToken = sp.getString("token", null);
 
-                        ListHelper.createList(uInput, spToken);
+                        try{
+                            ListHelper.createList(uInput, spToken);
+                        }catch (Exception e){
+                            Toast.makeText(getActivity().getApplicationContext(), "Unable to add this list", Toast.LENGTH_LONG).show();
+                            e.getMessage();
+                        }
+
                         // TODO need to refresh the adapter with new data
 
                     }
