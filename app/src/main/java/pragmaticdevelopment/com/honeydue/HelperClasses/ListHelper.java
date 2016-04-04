@@ -1,5 +1,7 @@
 package pragmaticdevelopment.com.honeydue.HelperClasses;
 
+import android.os.StrictMode;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +36,15 @@ public class ListHelper {
 
     // Create a single list.
     public static void createList(String title, String uToken){
-        APIConsumer.createListJson(title, uToken);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try{
+            APIConsumer.createListJson(title, uToken);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     // Deletes a single list
