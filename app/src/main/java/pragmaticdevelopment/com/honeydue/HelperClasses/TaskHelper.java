@@ -1,5 +1,7 @@
 package pragmaticdevelopment.com.honeydue.HelperClasses;
 
+import android.os.StrictMode;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,11 +19,15 @@ public class TaskHelper {
     //TODO Scott: need to parse date before inserting within method don't rely on precondition.
     // Creates a single task in a list.*** Be sure to parse the date as a precondition.***
     public static void createListItem(int listId, String title, String content, Date dueDate, String uToken){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         APIConsumer.createListItemJson(listId, title, content, dueDate, uToken);
     }
 
     // Deletes a single task in a list.
     public static void deleteListItem(int listId, int itemId, String uToken){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         APIConsumer.deleteListItemJson(listId, itemId, uToken);
     }
 

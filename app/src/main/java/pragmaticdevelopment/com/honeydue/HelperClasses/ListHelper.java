@@ -50,12 +50,25 @@ public class ListHelper {
 
     // Deletes a single list
     public static void deleteList(int id, String token){
-        APIConsumer.deleteListJson(id, token);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try{
+            APIConsumer.deleteListJson(id, token);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Removes a single collaborative user from the an associated shared list. it requires the "shared users" user id. the "self" users token and the list id
     public static void removeCollabUserFromList(int listId, int userId, String token){
-        APIConsumer.removeUserJson(listId, userId, token);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try{
+            APIConsumer.removeUserJson(listId, userId, token);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     // Returns a List Model of a single list, requires users token
@@ -104,6 +117,17 @@ public class ListHelper {
         }catch (JSONException e) {
             e.getMessage();
             return null;
+        }
+    }
+
+    public static void updateList(int listId, String title, String uToken){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try{
+            APIConsumer.updateListJson(listId, title, uToken);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

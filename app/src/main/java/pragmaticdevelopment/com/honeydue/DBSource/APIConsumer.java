@@ -61,7 +61,7 @@ public class APIConsumer {
     private static String doDeleteRequest(URL url, String token) throws IOException
     {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        //connection.setDoOutput(true);
+
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Content-Type", "text/plain");
@@ -71,6 +71,48 @@ public class APIConsumer {
             connection.setRequestProperty("X-Token", token);
 
         connection.connect();
+
+        int responseCode = connection.getResponseCode();
+
+        if(responseCode == -1)
+            return null;
+
+        InputStream response = connection.getErrorStream();
+        if(response == null)
+            response = connection.getInputStream();
+
+        String retString = "";
+        InputStreamReader isr = new InputStreamReader(response, CHARSET);
+        BufferedReader reader = new BufferedReader(isr);
+        String inputLine;
+        while ((inputLine = reader.readLine()) != null)
+            retString += (inputLine);
+
+        reader.close();
+        isr.close();
+
+        return retString;
+    }
+
+    private static String doPutRequest(URL url, String parameters, String token) throws IOException
+    {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        //connection.setDoOutput(true);
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestMethod("PUT");
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setRequestProperty("charset", "utf-8");
+        connection.setRequestProperty("Accept-Charset", CHARSET);
+
+        if(token != null)
+            connection.setRequestProperty("X-Token", token);
+
+        connection.connect();
+        OutputStream output = connection.getOutputStream();
+        output.write(parameters.getBytes(CHARSET));
+        output.flush();
+        output.close();
+
 
         int responseCode = connection.getResponseCode();
 
@@ -223,6 +265,24 @@ public class APIConsumer {
         }
     }
 
+    public static String updateListJson(int listId, String title, String token)
+    {
+        try
+        {
+            String encodedTitle = URLEncoder.encode(title, CHARSET);
+
+            String parameters = String.format("title=%s", encodedTitle);
+
+            URL url = new URL(String.format("%s%s", MASTER_ENDPOINT, String.format(LISTS_I_ENDPOINT_SUFFIX, listId)));
+            return doPutRequest(url, parameters, token);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            return "";
+        }
+    }
+
     public static String createListJson(String title, String token)
     {
         try
@@ -306,6 +366,31 @@ public class APIConsumer {
 
             URL url = new URL(String.format("%s%s", MASTER_ENDPOINT, String.format(LISTS_I_ITEMS_ENDPOINT_SUFFIX, listId)));
             return doPostRequest(url, parameters, token);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            return "";
+        }
+    }
+
+    public static String updateListItemJson(int listId, int itemId, String title, String content, Date dueDate, String token)
+    {
+        try
+        {
+            String encodedTitle = URLEncoder.encode(title, CHARSET);
+            String encodedContent = URLEncoder.encode(content, CHARSET);
+
+            String parameters = String.format("title=%s&content=%s", encodedTitle, encodedContent);
+
+            if(dueDate != null)
+            {
+                String encodedDueDate = URLEncoder.encode(new SimpleDateFormat("MM/dd/yyyy KK:mm:ss a Z").format(dueDate), CHARSET);
+                parameters = String.format("%s&duedate=%s", parameters, encodedDueDate);
+            }
+
+            URL url = new URL(String.format("%s%s", MASTER_ENDPOINT, String.format(LISTS_I_ITEMS_I_ENDPOINT_SUFFIX, listId, itemId)));
+            return doPutRequest(url, parameters, token);
         }
         catch(Exception ex)
         {

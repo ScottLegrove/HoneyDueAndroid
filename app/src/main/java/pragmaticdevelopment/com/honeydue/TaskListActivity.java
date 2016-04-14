@@ -1,6 +1,7 @@
 package pragmaticdevelopment.com.honeydue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -35,6 +38,8 @@ public class TaskListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Task List");
+        toolbar.showOverflowMenu();
+
         setSupportActionBar(toolbar);
 
         // Get user token
@@ -61,6 +66,26 @@ public class TaskListActivity extends AppCompatActivity {
         elv.setAdapter(new TasksListAdapter(tasks, getLayoutInflater()));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add_list) {
+            Intent intent = new Intent(this, AddTaskActivity.class);
+            intent.putExtra("listId", this.listId);
+            intent.putExtra("uToken", this.uToken);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 
     private class TasksListTask extends AsyncTask<Void, Void, Boolean>{
