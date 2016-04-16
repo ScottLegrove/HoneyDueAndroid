@@ -8,11 +8,15 @@ import android.content.SharedPreferences;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import java.util.List;
 
 import pragmaticdevelopment.com.honeydue.HelperClasses.ListHelper;
 
@@ -49,8 +53,12 @@ public class AlertDialogNewListFragment extends DialogFragment {
                             e.getMessage();
                         }
 
-                        // TODO need to refresh the adapter with new data
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
 
+                        FragmentTransaction ft = fm.beginTransaction();
+                        ListFragment lf = ListFragment.newInstance();
+                        ft.replace(R.id.fragFrame, lf, "lists");
+                        ft.commit();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

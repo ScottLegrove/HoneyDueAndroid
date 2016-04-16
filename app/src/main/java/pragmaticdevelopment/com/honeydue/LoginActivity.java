@@ -76,6 +76,16 @@ public class LoginActivity extends AppCompatActivity { // implements LoaderCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        SharedPreferences sp = getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
+
+        // Check if user is signed in already
+        if (sp.contains("token")){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
         // populateAutoComplete();

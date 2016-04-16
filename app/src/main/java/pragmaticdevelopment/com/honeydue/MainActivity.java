@@ -1,5 +1,8 @@
 package pragmaticdevelopment.com.honeydue;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -99,6 +102,16 @@ public class MainActivity extends AppCompatActivity
             getSupportActionBar().setTitle("User Settings");
             UserSettingsFragment usf = UserSettingsFragment.newInstance();
             ft.replace(R.id.fragFrame, usf, "userSettings");
+        } else if (id == R.id.logout) {
+            SharedPreferences sp = getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
+            SharedPreferences.Editor spEdit = sp.edit();
+            spEdit.clear();
+            spEdit.commit();
+
+            // Go back to Login page and clear activity stack
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
 
         ft.commit();
