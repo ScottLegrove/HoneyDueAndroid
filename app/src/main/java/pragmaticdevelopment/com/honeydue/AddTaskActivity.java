@@ -1,5 +1,6 @@
 package pragmaticdevelopment.com.honeydue;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,14 +10,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import pragmaticdevelopment.com.honeydue.HelperClasses.TaskHelper;
 
 public class AddTaskActivity extends AppCompatActivity {
     private int listId;
     private String uToken;
+    private String LIST_TITLE_EXTRA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         this.listId = getIntent().getExtras().getInt("listId");
         this.uToken = getIntent().getExtras().getString("uToken");
+        this.LIST_TITLE_EXTRA = getIntent().getStringExtra("LIST_TITLE_EXTRA");
         Button button = (Button) findViewById(R.id.btnSubmitTask);
 
         button.setOnClickListener(new View.OnClickListener(){
@@ -39,8 +45,14 @@ public class AddTaskActivity extends AppCompatActivity {
                 EditText title = (EditText)findViewById(R.id.editTxtTaskTitle);
                 EditText desc = (EditText)findViewById(R.id.editTxtTaskDesc);
                 DatePicker datePicker = (DatePicker)findViewById(R.id.datePickTaskDate);
-                Date date = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth());
+
+                Calendar cal = GregorianCalendar.getInstance();
+                cal.set(datePicker.getMonth(), datePicker.getDayOfMonth(), 1900 + datePicker.getYear());
+                Date date = cal.getTime();
                 TaskHelper.createListItem(id, title.getText().toString(),desc.getText().toString(), date, token);
+
+                Toast.makeText(getApplicationContext(), "Task Succesfully Added", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }

@@ -32,15 +32,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Completion Date"
-        android:id="@+id/textView5"
-        android:layout_below="@+id/editTxtTaskDesc"
-        android:layout_centerHorizontal="true" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,12 +65,13 @@
     <DatePicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleX="1"
+        android:scaleY=".6"
         android:id="@+id/datePickTaskDate"
         android:datePickerMode="calendar"
-        android:layout_below="@+id/textView5"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/btnSubmitTask"
         android:focusable="true"
-        android:nestedScrollingEnabled="true" />
+        android:nestedScrollingEnabled="true"
+        android:layout_below="@+id/textView4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

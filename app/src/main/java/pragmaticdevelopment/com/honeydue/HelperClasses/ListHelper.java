@@ -120,6 +120,17 @@ public class ListHelper {
         }
     }
 
+    public static void addCollabUserShareList(int listId, String username, String uToken){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        try{
+            APIConsumer.updateListJson(listId, username, uToken);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public static void updateList(int listId, String title, String uToken){
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
