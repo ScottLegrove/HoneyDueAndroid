@@ -31,6 +31,7 @@ public class TaskListActivity extends AppCompatActivity {
     private TasksListTask tlTask = null;
     private int listId;
     private String uToken;
+    private String listName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +43,67 @@ public class TaskListActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        // Get user token
-        SharedPreferences sp = getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
-        uToken = sp.getString("token", null);
+        if(savedInstanceState != null){
+            uToken = savedInstanceState.getString("uToken");
+            listId = savedInstanceState.getInt("listId");
+            listName = savedInstanceState.getString("listName");
+        } else {
+            // Get user token
+            SharedPreferences sp = getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
+            uToken = sp.getString("token", null);
 
-        // Get passed list ID
-        Bundle extras = getIntent().getExtras();
-        listId = extras.getInt("LIST_ID_EXTRA");
+            // Get passed list ID
+            Bundle extras = getIntent().getExtras();
+            listId = extras.getInt("LIST_ID_EXTRA");
+            listName = extras.getString("LIST_TITLE_EXTRA");
+        }
 
         // Set title
         TextView listTitle = (TextView) findViewById(R.id.lblListTitle);
-        listTitle.setText(extras.getString("LIST_TITLE_EXTRA"));
+        listTitle.setText(listName);
+
+        // Attempt to get Tasks
+        tlTask = new TasksListTask(listId, uToken);
+        tlTask.execute((Void) null);
+
+        // Wait for tasks to be retrieved;
+        try{ tlTask.get(); }catch(Exception e){}
+
+        // Populate ExpandableListView
+        ExpandableListView elv = (ExpandableListView)findViewById(R.id.elvTasks);
+        elv.setAdapter(new TasksListAdapter(tasks, getLayoutInflater()));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putString("uToken", uToken);
+        savedInstanceState.putInt("listId", listId);
+        savedInstanceState.putString("listName", listName);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+
+        uToken = savedInstanceState.getString("uToken");
+        listId = savedInstanceState.getInt("listId");
+        listName = savedInstanceState.getString("listName");
+
+        setContentView(R.layout.activity_task_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Task List");
+        toolbar.showOverflowMenu();
+
+        setSupportActionBar(toolbar);
+
+        // Set title
+        TextView listTitle = (TextView) findViewById(R.id.lblListTitle);
+        listTitle.setText(listName);
 
         // Attempt to get Tasks
         tlTask = new TasksListTask(listId, uToken);
@@ -66,7 +117,6 @@ public class TaskListActivity extends AppCompatActivity {
         elv.setAdapter(new TasksListAdapter(tasks, getLayoutInflater()));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().show();
     }
 
     @Override
