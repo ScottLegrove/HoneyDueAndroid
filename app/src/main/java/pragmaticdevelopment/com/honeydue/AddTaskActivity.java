@@ -52,7 +52,13 @@ public class AddTaskActivity extends AppCompatActivity {
                 TaskHelper.createListItem(id, title.getText().toString(),desc.getText().toString(), date, token);
 
                 Toast.makeText(getApplicationContext(), "Task Succesfully Added", Toast.LENGTH_LONG).show();
-                finish();
+                //finish();
+
+                Intent intent = new Intent(getApplicationContext(), TaskListActivity.class);
+                intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("LIST_ID_EXTRA", listId);
+                intent.putExtra("LIST_TITLE_EXTRA", LIST_TITLE_EXTRA);
+                startActivity(intent);
             }
         });
     }
