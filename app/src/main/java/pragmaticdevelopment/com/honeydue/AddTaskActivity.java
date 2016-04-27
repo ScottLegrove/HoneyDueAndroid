@@ -38,6 +38,7 @@ public class AddTaskActivity extends AppCompatActivity {
         this.LIST_TITLE_EXTRA = getIntent().getStringExtra("LIST_TITLE_EXTRA");
         Button button = (Button) findViewById(R.id.btnSubmitTask);
 
+        assert button != null;
         button.setOnClickListener(new View.OnClickListener(){
            int id = listId;
            String token = uToken;
