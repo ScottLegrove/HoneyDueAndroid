@@ -464,4 +464,22 @@ public class APIConsumer {
             return "";
         }
     }
+
+    public static String updateGcmToken(String gcm, String token)
+    {
+        try
+        {
+            String encodedGcm = URLEncoder.encode(gcm, CHARSET);
+
+            String parameters = String.format("gcm=%s", encodedGcm);
+
+            URL url = new URL(String.format("%s%s", MASTER_ENDPOINT, LOGIN_ENDPOINT_SUFFIX));
+            return doPutRequest(url, parameters, token);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            return "";
+        }
+    }
 }

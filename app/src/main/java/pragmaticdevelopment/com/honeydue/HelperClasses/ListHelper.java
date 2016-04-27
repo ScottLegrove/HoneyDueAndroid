@@ -11,9 +11,6 @@ import pragmaticdevelopment.com.honeydue.DBSource.APIConsumer;
 import pragmaticdevelopment.com.honeydue.DBSource.ListsModel;
 import pragmaticdevelopment.com.honeydue.DBSource.UserModel;
 
-/**
- * Created by Scott Legrove on 3/17/2016.
- */
 public class ListHelper {
 
     public static ListsModel[] getAllLists(String userToken){
@@ -77,8 +74,7 @@ public class ListHelper {
             String json = APIConsumer.getListJson(listID, uToken);
             JSONObject list = new JSONObject(json);
 
-            ListsModel listModel = new ListsModel(list.getJSONObject("list").getInt("id"), list.getJSONObject("list").getString("title"));
-            return listModel;
+            return new ListsModel(list.getJSONObject("list").getInt("id"), list.getJSONObject("list").getString("title"));
         }catch (JSONException e){
             e.getMessage();
             return null;
@@ -91,9 +87,7 @@ public class ListHelper {
             String json = APIConsumer.getUserJson(listId, collaborativeUserId, uToken);
             JSONObject user = new JSONObject(json);
 
-            UserModel cUser = new UserModel(user.getInt("id"), user.getString("username"));
-
-            return cUser;
+            return new UserModel(user.getInt("id"), user.getString("username"));
         }catch (JSONException e){
             e.getMessage();
             return null;
@@ -125,7 +119,7 @@ public class ListHelper {
         StrictMode.setThreadPolicy(policy);
 
         try{
-            APIConsumer.updateListJson(listId, username, uToken);
+            APIConsumer.addUserJson(listId, username, uToken);
         }catch (Exception e){
             e.printStackTrace();
         }

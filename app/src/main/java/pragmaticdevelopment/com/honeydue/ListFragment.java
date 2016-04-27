@@ -1,7 +1,9 @@
 package pragmaticdevelopment.com.honeydue;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,11 +11,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -26,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pragmaticdevelopment.com.honeydue.DBSource.ListsModel;
+import pragmaticdevelopment.com.honeydue.HelperClasses.ListHelper;
 
 import static pragmaticdevelopment.com.honeydue.HelperClasses.ListHelper.*;
 
@@ -48,15 +58,95 @@ public class ListFragment extends Fragment {
     private int[] listIDs;
 
     public static ListFragment newInstance() {
-        ListFragment fragment = new ListFragment();
 
         // Put bundle or other args here
 
-        return fragment;
+        return new ListFragment();
     }
 
     public ListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.lvLists) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.actions_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        SharedPreferences sp = getContext().getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
+        final String spToken = sp.getString("token", null);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        final long itemId = info.id;
+
+        switch (item.getItemId()) {
+            case R.id.action_share_list:
+                final EditText shEditText = new EditText(this.getActivity());
+                AlertDialog dialog = new AlertDialog.Builder(this.getActivity())
+                        .setTitle("Share this list")
+                        .setMessage("Username")
+                        .setView(shEditText)
+                        .setPositiveButton("Share", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String shUser = String.valueOf(shEditText.getText());
+                                ListHelper.addCollabUserShareList(listIDs[(int) itemId], shUser, spToken);
+                                Toast.makeText(getActivity().getApplicationContext(), "Successfully shared with " + shUser,
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+                return true;
+            case R.id.action_edit_list:
+                final EditText edEditText = new EditText(this.getActivity());
+                AlertDialog builder = new AlertDialog.Builder(this.getActivity())
+                        .setTitle("Edit List Name")
+                        .setMessage("New List Name")
+                        .setView(edEditText)
+                        .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String newName = String.valueOf(edEditText.getText());
+                                ListHelper.updateList(listIDs[(int) itemId], newName, spToken);
+                                Toast.makeText(getActivity().getApplicationContext(), "Successfully changed list name to " + newName,
+                                        Toast.LENGTH_SHORT).show();
+                                FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                                FragmentTransaction ft = fm.beginTransaction();
+                                ListFragment lf = ListFragment.newInstance();
+                                ft.replace(R.id.fragFrame, lf, "lists");
+                                ft.commit();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                builder.show();
+                return true;
+            case R.id.action_delete_list:
+                Log.d("delete ", "delete");
+                ListHelper.deleteList(listIDs[(int) itemId], spToken);
+                Toast.makeText(getActivity().getApplicationContext(), "List deleted!",
+                        Toast.LENGTH_SHORT).show();
+
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                FragmentTransaction ft = fm.beginTransaction();
+                ListFragment lf = ListFragment.newInstance();
+                ft.replace(R.id.fragFrame, lf, "lists");
+                ft.commit();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     @Override
@@ -72,6 +162,7 @@ public class ListFragment extends Fragment {
 
         // Initialize lists
         lvLists = (ListView) view.findViewById(R.id.lvLists);
+        registerForContextMenu(lvLists);
 
         // Get user token
         SharedPreferences sp = getContext().getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);

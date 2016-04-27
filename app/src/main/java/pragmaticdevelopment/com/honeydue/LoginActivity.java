@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 import pragmaticdevelopment.com.honeydue.DBSource.APIConsumer;
 import pragmaticdevelopment.com.honeydue.DBSource.UserModel;
+import pragmaticdevelopment.com.honeydue.Services.*;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static pragmaticdevelopment.com.honeydue.HelperClasses.UserHelper.*;
@@ -72,6 +73,21 @@ public class LoginActivity extends AppCompatActivity { // implements LoaderCallb
     private View mProgressView;
     private View mLoginFormView;
 
+    protected void goToMainActivity()
+    {
+        SharedPreferences sp = getSharedPreferences(getString(R.string.shared_pref_id), Context.MODE_PRIVATE);
+
+        if(!sp.contains("gcmToken"))
+        {
+            Intent serviceIntent = new Intent(this, GcmRegistrationIntentService.class);
+            startService(serviceIntent);
+        }
+
+        Intent activityIntent = new Intent(getApplicationContext(), MainActivity.class);
+        activityIntent.setFlags(activityIntent.FLAG_ACTIVITY_NEW_TASK | activityIntent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(activityIntent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,9 +97,7 @@ public class LoginActivity extends AppCompatActivity { // implements LoaderCallb
 
         // Check if user is signed in already
         if (sp.contains("token")){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            goToMainActivity();
         }
 
         // Set up the login form.
@@ -254,9 +268,7 @@ public class LoginActivity extends AppCompatActivity { // implements LoaderCallb
 
             if (success) {
                 // Send user to main activity
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                goToMainActivity();
             } else {
                 Toast.makeText(getApplicationContext(), "Invalid Login", Toast.LENGTH_SHORT).show();
             }
